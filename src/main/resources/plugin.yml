@@ -1,0 +1,7 @@
+name: Husky Core
+version: '1.0'
+main: cn.swustmc.husky.huskyCore.HuskyCore
+api-version: '1.20'
+prefix: GameCore
+authors: [ SiberianHusky, xin_yi_hl ]
+description: 西南科技大学星空社游戏核心
