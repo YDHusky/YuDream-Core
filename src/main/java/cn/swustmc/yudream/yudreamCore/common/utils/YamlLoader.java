@@ -1,4 +1,4 @@
-package cn.swustmc.husky.huskyCore.common.utils;
+package cn.swustmc.yudream.yudreamCore.common.utils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

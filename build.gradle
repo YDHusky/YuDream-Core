@@ -3,7 +3,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-group = 'cn.swustmc.husky'
+group = 'cn.swustmc.yudream'
 version = '1.0'
 
 repositories {

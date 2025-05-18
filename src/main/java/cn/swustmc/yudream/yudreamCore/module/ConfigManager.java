@@ -1,6 +1,6 @@
-package cn.swustmc.husky.huskyCore.module;
+package cn.swustmc.yudream.yudreamCore.module;
 
-import cn.swustmc.husky.huskyCore.common.utils.YamlLoader;
+import cn.swustmc.yudream.yudreamCore.common.utils.YamlLoader;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 

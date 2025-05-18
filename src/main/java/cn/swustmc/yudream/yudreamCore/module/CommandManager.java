@@ -1,8 +1,8 @@
-package cn.swustmc.husky.huskyCore.module;
+package cn.swustmc.yudream.yudreamCore.module;
 
-import cn.swustmc.husky.huskyCore.api.command.BaseCommand;
-import cn.swustmc.husky.huskyCore.api.command.HuskyCommand;
-import cn.swustmc.husky.huskyCore.enums.CommandSenderType;
+import cn.swustmc.yudream.yudreamCore.api.command.BaseCommand;
+import cn.swustmc.yudream.yudreamCore.api.command.YuDreamCommand;
+import cn.swustmc.yudream.yudreamCore.enums.CommandSenderType;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
@@ -28,28 +28,28 @@ public class CommandManager {
 
     private final Map<String, Map<String, CommandTree>> commandTreeMap = new HashMap<>();
     private final Map<String, BaseCommand> commandExecutorMap = new HashMap<>();
-    private final Map<String, HuskyCommand> huskyCommandExecutorMap = new HashMap<>();
+    private final Map<String, YuDreamCommand> yudreamCommandExecutorMap = new HashMap<>();
 
-    private void registerCommandTree(JavaPlugin plugin, BaseCommand baseCommand, HuskyCommand huskyCommand) {
+    private void registerCommandTree(JavaPlugin plugin, BaseCommand baseCommand, YuDreamCommand yuDreamCommand) {
         if (!commandTreeMap.containsKey(plugin.getName())) {
             commandTreeMap.put(plugin.getName(), new HashMap<>());
         }
         Map<String, CommandTree> commandTreeMapData = commandTreeMap.get(plugin.getName());
-        if (!commandTreeMapData.containsKey(huskyCommand.baseCommand())) {
-            commandTreeMapData.put(huskyCommand.baseCommand(), new CommandTree());
-            commandTreeMapData.get(huskyCommand.baseCommand()).currentArg = huskyCommand.baseCommand();
+        if (!commandTreeMapData.containsKey(yuDreamCommand.baseCommand())) {
+            commandTreeMapData.put(yuDreamCommand.baseCommand(), new CommandTree());
+            commandTreeMapData.get(yuDreamCommand.baseCommand()).currentArg = yuDreamCommand.baseCommand();
         }
-        CommandTree cursor = commandTreeMapData.get(huskyCommand.baseCommand());
-        for (String arg : huskyCommand.args()) {
+        CommandTree cursor = commandTreeMapData.get(yuDreamCommand.baseCommand());
+        for (String arg : yuDreamCommand.args()) {
             if (!cursor.children.containsKey(arg)) {
                 cursor.children.put(arg, new CommandTree());
                 cursor.children.get(arg).currentArg = arg;
             }
             cursor = cursor.children.get(arg);
         }
-        String commandString = huskyCommand.baseCommand() + "/" + String.join("/", huskyCommand.args());
+        String commandString = yuDreamCommand.baseCommand() + "/" + String.join("/", yuDreamCommand.args());
         commandExecutorMap.put(commandString, baseCommand);
-        huskyCommandExecutorMap.put(commandString, huskyCommand);
+        yudreamCommandExecutorMap.put(commandString, yuDreamCommand);
     }
 
     public void loadCommand(JavaPlugin plugin, String packageName) {
@@ -57,13 +57,13 @@ public class CommandManager {
                 .enableAnnotationInfo()
                 .acceptPackages(packageName)
                 .scan()) {
-            List<ClassInfo> annotatedClasses = scanResult.getClassesWithAnnotation(HuskyCommand.class.getName());
+            List<ClassInfo> annotatedClasses = scanResult.getClassesWithAnnotation(YuDreamCommand.class.getName());
             for (ClassInfo classInfo : annotatedClasses) {
                 Class<?> clazz = classInfo.loadClass();
                 if (BaseCommand.class.isAssignableFrom(clazz)) {
                     try {
                         BaseCommand commandInstance = (BaseCommand) clazz.getDeclaredConstructor().newInstance();
-                        HuskyCommand annotation = clazz.getAnnotation(HuskyCommand.class);
+                        YuDreamCommand annotation = clazz.getAnnotation(YuDreamCommand.class);
                         String baseCommand = annotation.baseCommand();
                         registerCommandTree(plugin, commandInstance, annotation);
                         plugin.getLogger().info("已加载命令: " + baseCommand);
@@ -84,27 +84,27 @@ public class CommandManager {
             CommandExecutor commandExecutor = (sender, command, label, args) -> {
                 StringBuilder commandString = new StringBuilder(baseCommand + "/");
                 for (int i = 0; i < args.length; i++) {
-                    HuskyCommand huskyCommand = huskyCommandExecutorMap.get(commandString.toString());
+                    YuDreamCommand yuDreamCommand = yudreamCommandExecutorMap.get(commandString.toString());
                     BaseCommand baseCommandExecutor = commandExecutorMap.get(commandString.toString());
 
                     commandString.append(args[i]);
                     if (i + 1 != args.length) {
                         commandString.append("/");
                     }
-                    if (huskyCommand == null || baseCommandExecutor == null) {
+                    if (yuDreamCommand == null || baseCommandExecutor == null) {
                         continue;
                     }
-                    if (huskyCommand.permission().isEmpty() || sender.hasPermission(huskyCommand.permission())) {
-                        if (huskyCommand.senderType() == CommandSenderType.ALL) {
+                    if (yuDreamCommand.permission().isEmpty() || sender.hasPermission(yuDreamCommand.permission())) {
+                        if (yuDreamCommand.senderType() == CommandSenderType.ALL) {
                             return baseCommandExecutor.execute(sender, args);
-                        } else if (huskyCommand.senderType() == CommandSenderType.CONSOLE) {
+                        } else if (yuDreamCommand.senderType() == CommandSenderType.CONSOLE) {
                             if (sender instanceof ConsoleCommandSender) {
                                 return baseCommandExecutor.execute(sender, args);
                             } else {
                                 sender.sendMessage("§c此命令只能由控制台执行");
                                 return false;
                             }
-                        } else if (huskyCommand.senderType() == CommandSenderType.PLAYER) {
+                        } else if (yuDreamCommand.senderType() == CommandSenderType.PLAYER) {
                             if (sender instanceof org.bukkit.entity.Player) {
                                 return baseCommandExecutor.execute(sender, args);
                             } else {

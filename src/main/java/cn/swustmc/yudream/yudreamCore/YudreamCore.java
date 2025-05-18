@@ -1,8 +1,8 @@
-package cn.swustmc.husky.huskyCore;
+package cn.swustmc.yudream.yudreamCore;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class HuskyCore extends JavaPlugin {
+public final class YudreamCore extends JavaPlugin {
 
     @Override
     public void onEnable() {

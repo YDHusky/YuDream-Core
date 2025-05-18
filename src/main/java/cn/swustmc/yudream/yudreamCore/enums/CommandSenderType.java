@@ -1,4 +1,4 @@
-package cn.swustmc.husky.huskyCore.enums;
+package cn.swustmc.yudream.yudreamCore.enums;
 
 /**
  * cn.swustmc.husky.huskyCore.enums

@@ -1,4 +1,4 @@
-package cn.swustmc.husky.huskyCore.common.utils;
+package cn.swustmc.yudream.yudreamCore.common.utils;
 
 /**
  * cn.swustmc.husky.huskyCore.common.utils

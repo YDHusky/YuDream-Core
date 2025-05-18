@@ -1,4 +1,4 @@
-package cn.swustmc.husky.huskyCore.api.command;
+package cn.swustmc.yudream.yudreamCore.api.command;
 
 import org.bukkit.command.CommandSender;
 

@@ -1,6 +1,6 @@
-name: Husky Core
+name: YuDream Core
 version: '1.0'
-main: cn.swustmc.husky.huskyCore.HuskyCore
+main: cn.swustmc.yudream.yudreamCore.YudreamCore
 api-version: '1.20'
 prefix: GameCore
 authors: [ SiberianHusky, xin_yi_hl ]

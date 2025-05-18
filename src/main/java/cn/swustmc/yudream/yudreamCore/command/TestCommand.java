@@ -1,7 +1,7 @@
-package cn.swustmc.husky.huskyCore.command;
+package cn.swustmc.yudream.yudreamCore.command;
 
-import cn.swustmc.husky.huskyCore.api.command.BaseCommand;
-import cn.swustmc.husky.huskyCore.api.command.HuskyCommand;
+import cn.swustmc.yudream.yudreamCore.api.command.BaseCommand;
+import cn.swustmc.yudream.yudreamCore.api.command.YuDreamCommand;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
  * * @date 2025/5/19
  */
 
-@HuskyCommand(baseCommand = "huskycore", desc = "测试命令")
+@YuDreamCommand(baseCommand = "huskycore", desc = "测试命令")
 public class TestCommand implements BaseCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
