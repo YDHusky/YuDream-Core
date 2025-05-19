@@ -1,4 +1,4 @@
-name: YuDream Core
+name: YuDreamCore
 version: '1.0'
 main: cn.swustmc.yudream.yudreamCore.YudreamCore
 api-version: '1.20'
