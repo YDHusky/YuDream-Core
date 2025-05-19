@@ -1,8 +1,11 @@
-package cn.swustmc.yudream.yudreamCore.api.lang;
+package cn.swustmc.yudream.yudreamCore.entity.lang;
 
 import cn.swustmc.yudream.yudreamCore.common.utils.StringUtils;
 import cn.swustmc.yudream.yudreamCore.common.utils.YamlLoader;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -11,7 +14,7 @@ import java.util.Map;
 /**
  * 一个用于管理语言配置的类，允许动态加载、切换和使用不同的语言文件
  */
-public class LangManager {
+public class PluginLang {
     private final JavaPlugin plugin;
     private final String baseLangFolder;
     private final Map<String, FileConfiguration> langMap;
@@ -23,7 +26,7 @@ public class LangManager {
      * @param plugin      Bukkit插件实例，用于日志输出和资源加载
      * @param defaultLang 默认使用的语言标识符
      */
-    public LangManager(JavaPlugin plugin, String defaultLang) {
+    public PluginLang(JavaPlugin plugin, String defaultLang) {
         this.plugin = plugin;
         this.baseLangFolder = "lang/";
         this.currentLang = defaultLang;
@@ -37,7 +40,7 @@ public class LangManager {
      * @param baseLangFolder 语言文件的基础文件夹路径
      * @param defaultLang    默认使用的语言标识符
      */
-    public LangManager(JavaPlugin plugin, String baseLangFolder, String defaultLang) {
+    public PluginLang(JavaPlugin plugin, String baseLangFolder, String defaultLang) {
         this.plugin = plugin;
         this.baseLangFolder = baseLangFolder;
         this.currentLang = defaultLang;

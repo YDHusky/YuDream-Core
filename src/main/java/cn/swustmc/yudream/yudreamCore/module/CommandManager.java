@@ -2,6 +2,7 @@ package cn.swustmc.yudream.yudreamCore.module;
 
 import cn.swustmc.yudream.yudreamCore.api.command.BaseCommand;
 import cn.swustmc.yudream.yudreamCore.api.command.YuDreamCommand;
+import cn.swustmc.yudream.yudreamCore.common.utils.CommandUtils;
 import cn.swustmc.yudream.yudreamCore.enums.CommandSenderType;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -21,10 +22,20 @@ import java.util.*;
  */
 public class CommandManager {
 
+    private static CommandManager instance;
+
+    public static CommandManager getInstance() {
+        if (instance == null) {
+            instance = new CommandManager();
+        }
+        return instance;
+    }
+
     static class CommandTree {
         String currentArg;
         Map<String, CommandTree> children = new HashMap<>();
     }
+
 
     private final Map<String, Map<String, CommandTree>> commandTreeMap = new HashMap<>();
     private final Map<String, BaseCommand> commandExecutorMap = new HashMap<>();
@@ -116,6 +127,17 @@ public class CommandManager {
                         sender.sendMessage("§c你没有权限执行此命令");
                         return false;
                     }
+                }
+                if (args.length > 0 && args[0].equals("help")) {
+                    List<BaseCommand> commandList = new ArrayList<>();
+
+                    for (String commandStr : yudreamCommandExecutorMap.keySet()) {
+                        if (commandStr.startsWith(baseCommand + "/")) {
+                            commandList.add(commandExecutorMap.get(commandStr));
+                        }
+                    }
+                    sender.sendMessage(CommandUtils.commandHelpMenu(plugin, commandList));
+                    return true;
                 }
                 sender.sendMessage("§c未知的命令");
                 return false;

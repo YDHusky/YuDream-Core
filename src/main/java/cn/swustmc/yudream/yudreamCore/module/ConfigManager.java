@@ -12,6 +12,16 @@ import java.util.Map;
  * 它提供了注册默认配置和自定义配置的方法，以及重新加载配置的方法
  */
 public class ConfigManager {
+
+    private static ConfigManager instance;
+    public static ConfigManager getInstance() {
+        if (instance == null) {
+            instance = new ConfigManager();
+        }
+        return instance;
+    }
+
+
     // 存储默认配置的映射表
     public Map<String, FileConfiguration> defaultConfigMap;
     // 存储所有配置的映射表，键是插件名，值是另一个映射表，其中键是配置路径，值是配置文件

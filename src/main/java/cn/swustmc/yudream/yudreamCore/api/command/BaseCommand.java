@@ -1,6 +1,11 @@
 package cn.swustmc.yudream.yudreamCore.api.command;
 
+import cn.swustmc.yudream.yudreamCore.entity.Message;
+import cn.swustmc.yudream.yudreamCore.module.LangManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * cn.swustmc.husky.huskyCore.api.command
@@ -10,4 +15,13 @@ import org.bukkit.command.CommandSender;
  */
 public interface BaseCommand {
     boolean execute(CommandSender sender, String[] args);
+    default Message helpLineInfo(JavaPlugin plugin, YuDreamCommand yuDreamCommand) {
+        String desc = "";
+        try {
+            desc = LangManager.getInstance().getLang(plugin, yuDreamCommand.descLangKey());
+        } catch (Exception e) {
+            desc = yuDreamCommand.desc();
+        }
+        return new Message().command(yuDreamCommand.usages(), yuDreamCommand.baseCommand() + " " + String.join(" ", yuDreamCommand.args())).text(" ").text(desc);
+    }
 }

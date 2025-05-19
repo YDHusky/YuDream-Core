@@ -26,5 +26,7 @@ public @interface YuDreamCommand {
 
     String[] args() default {};
 
+    String usages() default  ""; // 命令用法
+
     String permission() default "";
 }
