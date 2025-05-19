@@ -1,6 +1,5 @@
 package cn.swustmc.yudream.yudreamCore.common.utils;
 
-import cn.swustmc.yudream.yudreamCore.YudreamCore;
 import cn.swustmc.yudream.yudreamCore.api.command.BaseCommand;
 import cn.swustmc.yudream.yudreamCore.api.command.YuDreamCommand;
 import cn.swustmc.yudream.yudreamCore.entity.Message;
@@ -10,10 +9,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

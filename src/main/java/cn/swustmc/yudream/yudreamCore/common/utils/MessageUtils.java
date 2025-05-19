@@ -3,7 +3,6 @@ package cn.swustmc.yudream.yudreamCore.common.utils;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BossBar;
 
 /**
  * cn.swustmc.yudream.yudreamCore.common.utils

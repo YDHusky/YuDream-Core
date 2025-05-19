@@ -2,10 +2,7 @@ package cn.swustmc.yudream.yudreamCore.entity.lang;
 
 import cn.swustmc.yudream.yudreamCore.common.utils.StringUtils;
 import cn.swustmc.yudream.yudreamCore.common.utils.YamlLoader;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;

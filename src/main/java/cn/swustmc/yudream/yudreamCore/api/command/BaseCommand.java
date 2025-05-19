@@ -3,7 +3,6 @@ package cn.swustmc.yudream.yudreamCore.api.command;
 import cn.swustmc.yudream.yudreamCore.entity.Message;
 import cn.swustmc.yudream.yudreamCore.module.LangManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
