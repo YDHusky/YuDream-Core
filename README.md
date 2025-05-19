@@ -7,6 +7,6 @@
 - [x] 语言管理(LangManager)
 - [x] 指令和补全注册器(@YudreamCommand,BaseCommand,CommandManager)
 - [ ] GUI相关功能
-- [ ] http基础库
+- [x] http基础库
 - [ ] 数据库基础库
-- [ ] 玩家消息构建工具
+- [x] 玩家消息构建工具
