@@ -14,6 +14,7 @@ import java.util.Map;
 public class ConfigManager {
 
     private static ConfigManager instance;
+
     public static ConfigManager getInstance() {
         if (instance == null) {
             instance = new ConfigManager();
@@ -26,6 +27,26 @@ public class ConfigManager {
     public Map<String, FileConfiguration> defaultConfigMap;
     // 存储所有配置的映射表，键是插件名，值是另一个映射表，其中键是配置路径，值是配置文件
     public Map<String, Map<String, FileConfiguration>> configMap;
+
+    public ConfigManager() {
+        defaultConfigMap = new HashMap<>();
+        configMap = new HashMap<>();
+    }
+
+    public FileConfiguration getDefaultConfig(JavaPlugin plugin) {
+        if (defaultConfigMap.containsKey(plugin.getName())) {
+            return defaultConfigMap.get(plugin.getName());
+        }
+        return null;
+    }
+
+    public FileConfiguration getConfig(JavaPlugin plugin, String path) {
+        if (configMap.containsKey(plugin.getName())) {
+            return configMap.get(plugin.getName()).get(path);
+        }
+        return null;
+    }
+
 
     /**
      * 注册插件的默认配置

@@ -4,6 +4,7 @@ import cn.swustmc.yudream.yudreamCore.common.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
@@ -22,12 +23,20 @@ public class Message {
     }
 
     public Message text(String text) {
-        cb.append(Component.text(StringUtils.replaceColor(text)));
+        try {
+            cb.append(Component.text(StringUtils.replaceColor(text)));
+        } catch (Exception ignored) {
+
+        }
         return this;
     }
 
     public Message command(String text, String command) {
-        cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+        try {
+            cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+        } catch (Exception ignored) {
+
+        }
         return this;
 
     }
@@ -38,28 +47,43 @@ public class Message {
     }
 
     public Message hover(String text) {
-        cb.hoverEvent(Component.text(StringUtils.replaceColor(text)));
+        try {
+            cb.hoverEvent(Component.text(StringUtils.replaceColor(text)));
+        } catch (Exception ignored) {
+
+        }
         return this;
     }
 
-    public String color(String color) {
-        cb.color(net.kyori.adventure.text.format.TextColor.fromHexString(color));
-        return color;
+    public Message color(TextColor color) {
+        cb.color(color);
+        return this;
     }
 
     public Message hoverText(String text, String hoverText) {
-        cb.append(Component.text(StringUtils.replaceColor(text)).hoverEvent(Component.text(StringUtils.replaceColor(hoverText))));
+        try {
+            cb.append(Component.text(StringUtils.replaceColor(text)).hoverEvent(Component.text(StringUtils.replaceColor(hoverText))));
+        } catch (Exception ignored) {
+
+        }
         return this;
     }
 
     public Message runCommand(String text, String command) {
-        cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+        try {
+            cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+        } catch (Exception ignored) {
+
+        }
         return this;
 
     }
 
     public Message url(String text, String url) {
-        cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url)));
+        try {
+            cb.append(Component.text(StringUtils.replaceColor(text)).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url)));
+        } catch (Exception ignored) {
+        }
         return this;
 
     }
@@ -70,9 +94,15 @@ public class Message {
 
     }
 
+    public Message appendComponent(Component component) {
+        cb.append(component);
+        return this;
+    }
+
     public Component build() {
         return cb.build();
     }
+
 
     public static Component mm(String miniMessageString) {
         return MiniMessage.miniMessage().deserialize(miniMessageString);

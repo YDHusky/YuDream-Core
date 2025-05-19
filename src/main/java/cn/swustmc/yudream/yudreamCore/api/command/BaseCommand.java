@@ -4,6 +4,7 @@ import cn.swustmc.yudream.yudreamCore.entity.Message;
 import cn.swustmc.yudream.yudreamCore.module.LangManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public interface BaseCommand {
     boolean execute(CommandSender sender, String[] args);
+
     default Message helpLineInfo(JavaPlugin plugin, YuDreamCommand yuDreamCommand) {
         String desc = "";
         try {
@@ -22,6 +24,6 @@ public interface BaseCommand {
         } catch (Exception e) {
             desc = yuDreamCommand.desc();
         }
-        return new Message().command(yuDreamCommand.usages(), yuDreamCommand.baseCommand() + " " + String.join(" ", yuDreamCommand.args())).text(" ").text(desc);
+        return new Message().color(TextColor.fromCSSHexString("#cbdc38")).command(yuDreamCommand.usages(), "/" + yuDreamCommand.baseCommand() + " " + String.join(" ", yuDreamCommand.args())).text(" ").appendComponent(Component.text(desc).color(TextColor.fromCSSHexString("#AAAAAA")));
     }
 }

@@ -22,7 +22,7 @@ public class LangManager {
         return instance;
     }
 
-    private Map<String, PluginLang> pluginLangMap;
+    private final Map<String, PluginLang> pluginLangMap;
 
     private LangManager() {
         pluginLangMap = new HashMap<>();

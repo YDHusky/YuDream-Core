@@ -1,5 +1,6 @@
 package cn.swustmc.yudream.yudreamCore.module;
 
+import cn.swustmc.yudream.yudreamCore.YudreamCore;
 import cn.swustmc.yudream.yudreamCore.api.command.BaseCommand;
 import cn.swustmc.yudream.yudreamCore.api.command.YuDreamCommand;
 import cn.swustmc.yudream.yudreamCore.common.utils.CommandUtils;
@@ -7,11 +8,10 @@ import cn.swustmc.yudream.yudreamCore.enums.CommandSenderType;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -59,11 +59,14 @@ public class CommandManager {
             cursor = cursor.children.get(arg);
         }
         String commandString = yuDreamCommand.baseCommand() + "/" + String.join("/", yuDreamCommand.args());
+        if (yuDreamCommand.args().length > 0) {
+            commandString += "/";
+        }
         commandExecutorMap.put(commandString, baseCommand);
         yudreamCommandExecutorMap.put(commandString, yuDreamCommand);
     }
 
-    public void loadCommand(JavaPlugin plugin, String packageName) {
+    public void loadCommand(JavaPlugin plugin, String packageName) throws Exception {
         try (ScanResult scanResult = new ClassGraph()
                 .enableAnnotationInfo()
                 .acceptPackages(packageName)
@@ -80,7 +83,7 @@ public class CommandManager {
                         plugin.getLogger().info("已加载命令: " + baseCommand);
                     } catch (Exception e) {
                         plugin.getLogger().severe("无法加载命令类: " + clazz.getName());
-                        e.printStackTrace();
+                        plugin.getLogger().warning(Arrays.toString(e.getStackTrace()));
                     }
                 }
             }
@@ -89,19 +92,22 @@ public class CommandManager {
         plugin.getLogger().info("所有命令被注册! 已注册" + commandExecutorMap.size() + "个命令!");
     }
 
-    private void registerCommands(JavaPlugin plugin) {
+    private void registerCommands(JavaPlugin plugin) throws Exception {
         Map<String, CommandTree> commandTreeMapData = commandTreeMap.get(plugin.getName());
+        if (commandTreeMapData == null) {
+            return;
+        }
         for (String baseCommand : commandTreeMapData.keySet()) {
+            PluginCommand pluginCommand = CommandUtils.getCommand(plugin, baseCommand);
             CommandExecutor commandExecutor = (sender, command, label, args) -> {
                 StringBuilder commandString = new StringBuilder(baseCommand + "/");
-                for (int i = 0; i < args.length; i++) {
+                for (int i = 0; i < args.length + 1; i++) {
                     YuDreamCommand yuDreamCommand = yudreamCommandExecutorMap.get(commandString.toString());
                     BaseCommand baseCommandExecutor = commandExecutorMap.get(commandString.toString());
-
-                    commandString.append(args[i]);
-                    if (i + 1 != args.length) {
-                        commandString.append("/");
+                    if (args.length != i) {
+                        commandString.append(args[i]);
                     }
+                    commandString.append("/");
                     if (yuDreamCommand == null || baseCommandExecutor == null) {
                         continue;
                     }
@@ -142,22 +148,35 @@ public class CommandManager {
                 sender.sendMessage("§c未知的命令");
                 return false;
             };
-            Objects.requireNonNull(plugin.getCommand(baseCommand)).setExecutor(commandExecutor);
             TabCompleter tabCompleter = (sender, command, alias, args) -> {
                 CommandTree cursor = commandTreeMapData.get(baseCommand);
                 for (int i = 0; i < args.length; i++) {
+                    List<String> tabList = new ArrayList<>();
+                    if (i == 0) {
+                        tabList.add("help");
+                    }
                     if (cursor.children.containsKey(args[i])) {
                         cursor = cursor.children.get(args[i]);
                         if (i + 1 == args.length) {
-                            return new ArrayList<>(cursor.children.keySet());
+                            tabList.addAll(cursor.children.keySet());
+                            return tabList;
                         }
                     } else {
-                        return new ArrayList<>(cursor.children.keySet());
+                        tabList.addAll(cursor.children.keySet());
+                        return tabList;
                     }
                 }
                 return new ArrayList<>();
             };
-            Objects.requireNonNull(plugin.getCommand(baseCommand)).setTabCompleter(tabCompleter);
+            pluginCommand.setExecutor(commandExecutor);
+            pluginCommand.setTabCompleter(tabCompleter);
+            Class<?> targetClass = Class.forName("org.bukkit.plugin.SimplePluginManager");
+
+            Field f = targetClass.getDeclaredField("commandMap");
+            f.setAccessible(true);
+            CommandMap map = (CommandMap) f.get(YudreamCore.instance.getServer().getPluginManager());
+            map.register(pluginCommand.getName(), pluginCommand);
         }
+
     }
 }
