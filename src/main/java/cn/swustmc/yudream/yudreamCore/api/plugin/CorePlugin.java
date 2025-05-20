@@ -18,6 +18,8 @@ public @interface CorePlugin {
 
     boolean isRegisterCommand() default true;
 
+    boolean isRegisterGui() default false;
+
     boolean isRegisterDefaultConfig() default false;
 
     String[] registerConfigPath() default {};

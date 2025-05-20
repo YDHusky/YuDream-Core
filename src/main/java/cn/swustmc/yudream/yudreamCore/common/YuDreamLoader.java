@@ -4,6 +4,7 @@ import cn.swustmc.yudream.yudreamCore.YudreamCore;
 import cn.swustmc.yudream.yudreamCore.api.plugin.CorePlugin;
 import cn.swustmc.yudream.yudreamCore.module.CommandManager;
 import cn.swustmc.yudream.yudreamCore.module.ConfigManager;
+import cn.swustmc.yudream.yudreamCore.module.GuiManager;
 import cn.swustmc.yudream.yudreamCore.module.LangManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,7 +61,13 @@ public class YuDreamLoader {
                     CommandManager.getInstance().loadCommand(javaPlugin, scanPackage);
                 } catch (Exception e) {
                     YudreamCore.instance.getLogger().warning("注册指令出现问题! " + e.getMessage());
-                    e.printStackTrace();
+                }
+            }
+            if (corePlugin.isRegisterGui()) {
+                try {
+                    GuiManager.getInstance().loadGuis(javaPlugin, scanPackage);
+                } catch (Exception e) {
+                    YudreamCore.instance.getLogger().warning("注册GUI出现问题! " + e.getMessage());
                 }
             }
             YudreamCore.instance.getLogger().info("已加载 " + javaPlugin.getName() + " 插件!");

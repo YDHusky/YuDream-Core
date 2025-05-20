@@ -12,9 +12,6 @@ import org.bukkit.command.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 
 /**
@@ -175,12 +172,10 @@ public class CommandManager {
             pluginCommand.setExecutor(commandExecutor);
             pluginCommand.setTabCompleter(tabCompleter);
             Class<?> targetClass = Class.forName("org.bukkit.plugin.SimplePluginManager");
-
             Field f = targetClass.getDeclaredField("commandMap");
             f.setAccessible(true);
             CommandMap map = (CommandMap) f.get(YudreamCore.instance.getServer().getPluginManager());
             map.register(pluginCommand.getName(), pluginCommand);
         }
-
     }
 }
