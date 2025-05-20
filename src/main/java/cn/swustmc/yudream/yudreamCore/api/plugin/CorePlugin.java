@@ -20,6 +20,8 @@ public @interface CorePlugin {
 
     boolean isRegisterGui() default false;
 
+    boolean isRegisterEvent() default true;
+
     boolean isRegisterDefaultConfig() default false;
 
     String[] registerConfigPath() default {};

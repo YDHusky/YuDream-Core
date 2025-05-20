@@ -1,5 +1,6 @@
 package cn.swustmc.yudream.yudreamCore.module;
 
+import cn.swustmc.yudream.yudreamCore.api.event.CoreEvent;
 import cn.swustmc.yudream.yudreamCore.api.gui.InventoryGui;
 import cn.swustmc.yudream.yudreamCore.api.gui.YuDreamGui;
 import io.github.classgraph.ClassGraph;
@@ -14,15 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
+@CoreEvent
 public class GuiManager implements Listener {
-    private static GuiManager instance;
 
-    public static GuiManager getInstance() {
-        if (instance == null) {
-            instance = new GuiManager();
-        }
-        return instance;
-    }
 
     private final Map<String ,InventoryGui> guiList = new HashMap<>();
 
