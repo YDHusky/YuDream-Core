@@ -17,7 +17,14 @@ import java.util.*;
 
 @CoreEvent
 public class GuiManager implements Listener {
+    private static GuiManager instance;
 
+    public static GuiManager getInstance() {
+        if (instance == null) {
+            instance = new GuiManager();
+        }
+        return instance;
+    }
 
     private final Map<String ,InventoryGui> guiList = new HashMap<>();
 
