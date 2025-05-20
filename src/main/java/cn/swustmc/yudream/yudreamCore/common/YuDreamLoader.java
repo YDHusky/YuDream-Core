@@ -5,6 +5,7 @@ import cn.swustmc.yudream.yudreamCore.api.plugin.CorePlugin;
 import cn.swustmc.yudream.yudreamCore.module.CommandManager;
 import cn.swustmc.yudream.yudreamCore.module.ConfigManager;
 import cn.swustmc.yudream.yudreamCore.module.LangManager;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -14,8 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * * @date 2025/5/20
  */
 public class YuDreamLoader {
-    public static void loader(JavaPlugin javaPlugin) {
-
+    private static void loadPlugin(JavaPlugin javaPlugin) {
         CorePlugin corePlugin = javaPlugin.getClass().getAnnotation(CorePlugin.class);
         if (corePlugin != null) {
             String scanPackage = corePlugin.scanPackage().isEmpty() ? javaPlugin.getClass().getPackageName() : corePlugin.scanPackage();
@@ -42,15 +42,19 @@ public class YuDreamLoader {
                     corePlugin.baseLangFolder(),
                     String.join(",", corePlugin.registerLang())
             ));
+
             if (corePlugin.isRegisterDefaultConfig()) {
                 ConfigManager.getInstance().registerDefaultConfig(javaPlugin);
             }
+
             for (String path : corePlugin.registerConfigPath()) {
                 ConfigManager.getInstance().registerConfig(javaPlugin, path);
             }
+
             for (String lang : corePlugin.registerLang()) {
                 LangManager.getInstance().registerLang(javaPlugin, corePlugin.baseLangFolder(), lang);
             }
+
             if (corePlugin.isRegisterCommand()) {
                 try {
                     CommandManager.getInstance().loadCommand(javaPlugin, scanPackage);
@@ -62,5 +66,12 @@ public class YuDreamLoader {
             YudreamCore.instance.getLogger().info("已加载 " + javaPlugin.getName() + " 插件!");
         }
 
+    }
+
+    public static void loader(){
+        for (Plugin plugin : YudreamCore.instance.getServer().getPluginManager().getPlugins()) {
+            JavaPlugin javaPlugin = (JavaPlugin) plugin;
+            loadPlugin(javaPlugin);
+        }
     }
 }
