@@ -6,13 +6,15 @@ import cn.swustmc.yudream.yudreamCore.api.db.Select;
 import cn.swustmc.yudream.yudreamCore.api.db.Update;
 import cn.swustmc.yudream.yudreamCore.common.utils.SqlUtils;
 
+import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@SuppressWarnings("unchecked")
 public class SqlManager {
 
     private static SqlManager instance;
@@ -24,14 +26,18 @@ public class SqlManager {
         return instance;
     }
 
+    private final Map<Class<?>, Object> proxyMap = new HashMap<>();
+
     private final SqlUtils sqlUtils = new SqlUtils();
 
-    private final String driver = "com.mysql.jdbc.Driver";
-    private final String url = "jdbc:mysql://localhost:3306/database?useSSL=false";
-    private final String username = "username";
-    private final String password = "password";
+    public <T> T getMapper(Class<?> clazz, DataSource dataSource){
+        if (proxyMap.containsKey(clazz)) {
+            return (T) proxyMap.get(clazz);
+        }
+        return (T) proxyMap.put(clazz, getProxy(clazz, dataSource));
+    }
 
-    public <T> T getMapper(Class<?> clazz) {
+    private <T> T getProxy(Class<?> clazz, DataSource dataSource) {
         ClassLoader classLoader = clazz.getClassLoader();
         Class<?>[] classes = new Class[]{clazz};
         InvocationHandler invocation = (proxy, method, args) -> {
@@ -41,11 +47,11 @@ public class SqlManager {
             String sql = (String) valueMethod.invoke(an);
             Object obj = args == null ? null : args[0];
             if (annotationType == Insert.class)
-                this.update(sql, obj);
+                this.update(dataSource, sql, obj);
             else if (annotationType == Update.class)
-                this.update(sql, obj);
+                this.update(dataSource, sql, obj);
             else if (annotationType == Delete.class)
-                this.update(sql, obj);
+                this.update(dataSource, sql, obj);
             else if (annotationType == Select.class) {
                 Class<?> returnType = method.getReturnType();
                 if (returnType == List.class) {
@@ -54,9 +60,9 @@ public class SqlManager {
                     Type[] patterns = realReturnType.getActualTypeArguments();
                     Type patternType = patterns[0];
                     Class<?> resultType = (Class<?>) patternType;
-                    return this.selectList(sql,obj,resultType);
+                    return this.selectList(dataSource, sql,obj,resultType);
                 }else {
-                    return this.selectOne(sql,obj,returnType);
+                    return this.selectOne(dataSource, sql,obj,returnType);
                 }
             }else {
                 System.out.println("无法处理的注解: " + annotationType.getName());
@@ -66,16 +72,15 @@ public class SqlManager {
         return (T) Proxy.newProxyInstance(classLoader, classes, invocation);
     }
 
-    public <T> T selectOne(String sql, Object obj, Class<?> resultType) {
-        return (T) selectList(sql, obj, resultType).get(0);
+    private <T> T selectOne(DataSource dataSource, String sql, Object obj, Class<?> resultType) {
+        return (T) selectList(dataSource, sql, obj, resultType).get(0);
     }
 
-    public <T> List<T> selectList(String sql, Object obj, Class<?> resultType) {
+    private <T> List<T> selectList(DataSource dataSource, String sql, Object obj, Class<?> resultType) {
         List<T> list = new ArrayList<>();
+        SQLAndKey sqlAndKey = sqlUtils.parseSQL(sql);
         try {
-            Class.forName(driver);
-            SQLAndKey sqlAndKey = sqlUtils.parseSQL(sql);
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlAndKey.getSql());
             if (obj != null) {
                 sqlUtils.handlerParameter(statement, obj, sqlAndKey.getList());
@@ -88,18 +93,17 @@ public class SqlManager {
             rs.close();
             statement.close();
             connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             System.out.println("查询错误: " + e.getMessage());
         }
         return list;
     }
 
-    public void update(String sql, Object obj) {
+    private void update(DataSource dataSource, String sql, Object obj) {
         if (sql == null || sql.isEmpty()) return;
         SQLAndKey sqlAndKey = sqlUtils.parseSQL(sql);
         try {
-            Class.forName(driver);
-            Connection connection = DriverManager.getConnection(url, username, password);
+            Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlAndKey.getSql());
             if (obj != null) {
                 sqlUtils.handlerParameter(statement, obj, sqlAndKey.getList());
@@ -107,7 +111,7 @@ public class SqlManager {
             statement.executeUpdate();
             statement.close();
             connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             System.out.println("更新错误: " + e.getMessage());
         }
     }
